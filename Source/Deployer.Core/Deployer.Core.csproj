@@ -8,49 +8,61 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="FileSystem\CachingLowLevelApi.cs" />
-    <Compile Remove="FileSystem\ILowLevelApi.cs" />
+    <Compile Remove="Exceptions\**" />
+    <Compile Remove="Registrations\**" />
+    <EmbeddedResource Remove="Exceptions\**" />
+    <EmbeddedResource Remove="Registrations\**" />
+    <None Remove="Exceptions\**" />
+    <None Remove="Registrations\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Deployer.cs" />
+    <Compile Remove="ScriptDeployer.cs" />
     <Compile Remove="Scripting\ConfigureBCD.cs" />
     <Compile Remove="Scripting\InstallDevMenu.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="ByteSize" Version="2.0.0" />
-    <PackageReference Include="ExtendedXmlSerializer" Version="3.2.4" />
-    <PackageReference Include="Grace" Version="7.1.0" />
-    <PackageReference Include="GS.BuildingBlocks.Option" Version="2.0.5" />
+    <PackageReference Include="ExtendedXmlSerializer" Version="3.6.0" />
+    <PackageReference Include="Grace" Version="7.1.1" />
+    <PackageReference Include="MediatR" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="3.1.3" />
     <PackageReference Include="morelinq" Version="3.3.2" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageReference Include="Octokit" Version="0.47.0" />
-    <PackageReference Include="Refit" Version="5.1.67" />
-    <PackageReference Include="Serilog" Version="2.9.0" />
-    <PackageReference Include="SharpCompress" Version="0.25.0" />
+    <PackageReference Include="Octokit" Version="0.48.0" />
+    <PackageReference Include="Optional" Version="4.0.0" />
+    <PackageReference Include="Optional.Collections" Version="1.1.0" />
+    <PackageReference Include="Refit" Version="5.2.4" />
+    <PackageReference Include="Serilog" Version="2.10.0" />
+    <PackageReference Include="SharpCompress" Version="0.26.0" />
     <PackageReference Include="Superpower" Version="2.3.0" />
     <PackageReference Include="System.Reactive" Version="4.4.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Deployer.Core.DeviceStore\Deployer.Core.DeploymentLibrary.csproj" />
+    <ProjectReference Include="..\Deployer.Filesystem\Deployer.Filesystem.csproj" />
+    <ProjectReference Include="..\Deployer.Tools.AzureDevOps\Deployer.Tools.AzureDevOps.csproj" />
+    <ProjectReference Include="..\Deployer.Tools.Bcd\Deployer.Tools.Bcd.csproj" />
+    <ProjectReference Include="..\Deployer.Tools.Dism\Deployer.Tools.Dism.csproj" />
+    <ProjectReference Include="..\Deployer.Tools.ImageFlashing\Deployer.Tools.ImageFlashing.csproj" />
+    <ProjectReference Include="..\Deployer.Tools.Wim\Deployer.Tools.Wim.csproj" />
+    <ProjectReference Include="..\Iridio\Source\Iridio.Runtime\Iridio.Runtime.csproj" />
+    <ProjectReference Include="..\Iridio\Source\Iridio\Iridio.csproj" />
     <ProjectReference Include="..\Registry\Registry\Registry.csproj" />
     <ProjectReference Include="..\RunProcessAsTask\src\RunProcessAsTask\RunProcessAsTask.csproj" />
-    <ProjectReference Include="..\SimpleScript\SimpleScript\SimpleScript.csproj" />
+    <ProjectReference Include="..\Zafiro\Source\Zafiro.UI\Zafiro.UI.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Core\**\*.*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Core\Bootstrap.txt">
+    <None Update="Core\Bootstrap.Debug.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Core\Tools\Etcher-Cli\x64\" />
-    <Folder Include="Core\Tools\Etcher-Cli\x86\" />
+    <None Update="Core\Bootstrap.Release.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

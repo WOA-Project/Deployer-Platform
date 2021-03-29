@@ -3,11 +3,16 @@ using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Deployer.Core;
+using Deployer.Core.Deployers.Errors.Deployer;
 using Deployer.Core.Interaction;
-using Deployer.Gui.ViewModels.Common;
+using Deployer.Wpf;
 using Grace.DependencyInjection.Attributes;
+using Iridio.Runtime.ReturnValues;
+using Optional;
 using ReactiveUI;
-using Zafiro.Core.UI;
+using Zafiro.Core.Patterns.Either;
+using Zafiro.UI;
+using DeployerFileOpenService = Deployer.Gui.Services.DeployerFileOpenService;
 
 namespace Deployer.Gui.ViewModels.Sections
 {
@@ -15,27 +20,27 @@ namespace Deployer.Gui.ViewModels.Sections
     [Metadata("Order", 2)]
     public class AdvancedViewModel : ReactiveObject, ISection
     {
-        private readonly ScriptDeployer deployer;
-        private readonly IDialogService dialogService;
+        private readonly IWoaDeployer deployer;
+        private readonly IInteraction interaction;
+        private readonly DeployerFileOpenService fileOpenService;
         private readonly CompositeDisposable disposables = new CompositeDisposable();
-        private readonly IFilePicker filePicker;
 
-        public AdvancedViewModel(ScriptDeployer deployer, IDialogService dialogService,
-            IFilePicker filePicker, OperationProgressViewModel operationProgress)
+        public AdvancedViewModel(IWoaDeployer deployer, IInteraction interaction,
+            OperationStatusViewModel operationStatus, DeployerFileOpenService fileOpenService)
         {
             this.deployer = deployer;
-            this.dialogService = dialogService;
-            this.filePicker = filePicker;
-            OperationProgress = operationProgress;
+            this.interaction = interaction;
+            this.fileOpenService = fileOpenService;
+            OperationStatus = operationStatus;
 
             ConfigureCommands();
 
             IsBusyObservable = RunScript.IsExecuting;
         }
 
-        public OperationProgressViewModel OperationProgress { get; }
+        public OperationStatusViewModel OperationStatus { get; }
 
-        public ReactiveCommand<Unit, Unit> RunScript { get; set; }
+        public ReactiveCommand<Unit, Either<DeployerError, Success>> RunScript { get; set; }
 
         public IObservable<bool> IsBusyObservable { get; }
 
@@ -46,27 +51,19 @@ namespace Deployer.Gui.ViewModels.Sections
 
         private void ConfigureRunCommand()
         {
-            RunScript = RunScriptCommand(deployer, filePicker);
+            var filter = new FileTypeFilter("Deployer Script", "*.ds", "*.txt");
+
+            RunScript = ReactiveCommand.CreateFromObservable(() => 
+                fileOpenService.Picks("Settings", new []{ filter })
+                    .SelectMany(file => deployer.Run(file.Source.OriginalString)));
 
             RunScript
-                .OnSuccess(
-                    () => dialogService.Notice("Execution finished", "The script has been executed successfully"))
-                .DisposeWith(disposables);
-
-            dialogService.HandleExceptionsFromCommand(RunScript,
-                exception => ("Script execution failed", exception.Message));
-        }
-
-        private static ReactiveCommand<Unit, Unit> RunScriptCommand(ScriptDeployer deployer, IFilePicker filePicker)
-        {
-            return ReactiveCommand.CreateFromObservable(() =>
-            {
-                var filter = new FileTypeFilter("Deployer Script", "*.ds", "*.txt");
-                return filePicker
-                    .Open("Select a script", new[] {filter})
-                    .Where(x => x != null)
-                    .SelectMany(file => Observable.FromAsync(() => deployer.RunScript(file.Source.LocalPath)));
-            });
+                .Subscribe(either => either
+                    .MapRight(success =>
+                        interaction.Message("Execution finished", "The script has been executed successfully", "OK".Some(), Optional.Option.None<string>()))
+                    .Handle(errors =>
+                        interaction.Message("Execution failed", $"The script execution has failed: {errors}", "OK".Some(), Optional.Option.None<string>())))
+                    .DisposeWith(disposables);
         }
     }
 }

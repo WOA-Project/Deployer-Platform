@@ -2,8 +2,7 @@
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using ByteSizeLib;
-using Deployer.Core.Exceptions;
-using Deployer.Core.FileSystem;
+using Deployer.Filesystem;
 using Zafiro.Core.Mixins;
 
 namespace Deployer.Lumia
@@ -31,7 +30,7 @@ namespace Deployer.Lumia
             }
 
             var partitions = await disk.GetPartitions();
-            var names = partitions.Select(x => x.Name);
+            var names = partitions.Select(x => x.GptName);
             var lookup = new[] { "EFIESP", "TZAPPS", "DPP" };
 
             return lookup.IsSubsetOf(names);
@@ -45,7 +44,7 @@ namespace Deployer.Lumia
         }
 
 
-        public static async Task<IDisk> GetDisk(Core.FileSystem.IFileSystem fileSystem)
+        public static async Task<IDisk> GetDisk(IFileSystem fileSystem)
         {
             var disks = await fileSystem.GetDisks();
 

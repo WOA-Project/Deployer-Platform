@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Deployer.Core\Deployer.Core.csproj" />
+    <ProjectReference Include="..\Deployer.Net4x\Deployer.Net4x.csproj" />
+    <ProjectReference Include="..\Deployer.NetFx\Deployer.Net4x.csproj" />
+  </ItemGroup>
+
+</Project>

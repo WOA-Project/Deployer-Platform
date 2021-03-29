@@ -1,25 +1,29 @@
 ﻿using System.Collections.Generic;
 using System.Reactive;
+using System.Reactive.Linq;
 using Deployer.Core.Interaction;
 using Deployer.Gui.Properties;
-using Deployer.Gui.ViewModels.Common;
+using Deployer.Wpf;
 using Grace.DependencyInjection;
+using Optional;
 using ReactiveUI;
-using Zafiro.Core.UI;
+using Zafiro.UI;
 
 namespace Deployer.Gui.ViewModels.Sections
 {
     public class MainViewModel : MainViewModelBase
     {
-        public OperationProgressViewModel OperationProgress { get; }
+        public OperationStatusViewModel OperationStatus { get; }
 
-        public MainViewModel(IList<Meta<ISection>> sections, IList<IBusy> busies, IDialogService contextDialog, OperationProgressViewModel operationProgress) : base(sections, busies)
+        public MainViewModel(IList<Meta<ISection>> sections, IList<IBusy> busies, IInteraction interaction, OperationStatusViewModel operationStatus) : base(sections, busies)
         {
-            OperationProgress = operationProgress;
-            ShowWarningCommand = ReactiveCommand.CreateFromTask(() => contextDialog.Notice(Resources.TermsOfUseTitle, Resources.WarningNotice));
+            OperationStatus = operationStatus;
+            ShowWarning = ReactiveCommand.CreateFromObservable(() => 
+                Observable.FromAsync(() =>  interaction.Message(Resources.TermsOfUseTitle, Resources.WarningNotice, "OK".Some(),
+                        Optional.Option.None<string>())));
         }
 
-        public ReactiveCommand<Unit, Unit> ShowWarningCommand { get; set; }
+        public ReactiveCommand<Unit, Unit> ShowWarning { get; set; }
 
         protected override string DonationLink => "https://github.com/WoA-project/WOA-Deployer/blob/master/Docs/Donations.md";
         protected override string HelpLink => "https://github.com/WOA-Project/WOA-Deployer-Lumia#need-help";

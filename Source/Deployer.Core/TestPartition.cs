@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using ByteSizeLib;
-using Deployer.Core.FileSystem;
+using Deployer.Filesystem;
 
 namespace Deployer.Core
 {
@@ -17,7 +17,7 @@ namespace Deployer.Core
         }
 
         public IDisk Disk { get; }
-        public string Name { get; set; }
+        public string GptName { get; set; }
         public GptType GptType { get; set; }
         public char? Letter { get; }
         public string Root { get; set; }

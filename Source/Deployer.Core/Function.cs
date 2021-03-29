@@ -3,11 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using SimpleScript;
+using Deployer.Core.Scripting.Core;
+using Iridio.Binding;
+using Iridio.Common;
+using Iridio.Common.Utils;
+using Iridio.Parsing.Model;
+using Serilog;
 
 namespace Deployer.Core
 {
-    public class Function : IFunction
+    public class Function : IFunction, IFunctionDeclaration
     {
         private readonly Lazy<object> instance;
         private readonly MethodInfo method;
@@ -25,6 +30,7 @@ namespace Deployer.Core
 
         public async Task<object> Invoke(object[] parameters)
         {
+            Log.Information("Executing {Name} with parameters {Parameters}", Name, Arguments.Zip(parameters, (argument, value) => new { Argument = argument, Value = value }));
             var transformed = parameters.Zip(method.GetParameters(), Transform);
             var result = await method.InvokeTask(instance.Value, transformed.ToArray());
             return result;
@@ -47,6 +53,21 @@ namespace Deployer.Core
                 }
 
                 return int.Parse((string) o);
+            }
+
+            if (info.ParameterType == typeof(double))
+            {
+                if (o is double n)
+                {
+                    return n;
+                }
+
+                if (o is int i)
+                {
+                    return (double) i;
+                }
+
+                return double.Parse((string)o);
             }
 
             return o;

@@ -1,0 +1,115 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Assets\appicon.ico" />
+    <None Remove="Assets\appicon.png" />
+    <None Remove="Assets\drive.png" />
+    <None Remove="Assets\gears_motor.gif" />
+    <None Remove="Assets\heart.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
+    <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.0" />
+    <PackageReference Include="ValueConverters" Version="2.0.20011.1" />
+    <PackageReference Include="WpfAnimatedGif" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\SuperJMN-Zafiro\Zafiro\Source\Zafiro.Wpf\Zafiro.Wpf.csproj" />
+    <ProjectReference Include="..\Deployer.Core.NetCoreApp\Deployer.Core.NetCoreApp.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\appicon.ico" />
+    <Resource Include="Assets\appicon.png" />
+    <Resource Include="Assets\drive.png" />
+    <Resource Include="Assets\gears_motor.gif" />
+    <Resource Include="Assets\heart.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ApplicationDefinition Update="App.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </ApplicationDefinition>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="App.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Resources.Designer.cs">
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Update="Views\DiskSelectionPart.xaml.cs">
+      <DependentUpon>DiskSelectionPart.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\MainWindow.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Parts\Advanced.xaml.cs">
+      <DependentUpon>Advanced.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Parts\DeviceDeployment.xaml.cs">
+      <DependentUpon>DeviceDeployment.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\ProgressControl.xaml.cs">
+      <DependentUpon>ProgressControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\ProgressPart.xaml.cs">
+      <DependentUpon>ProgressPart.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Requirements.xaml.cs">
+      <DependentUpon>Requirements.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\WimOptionsPart.xaml.cs">
+      <DependentUpon>WimOptionsPart.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources.resx">
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\DiskSelectionPart.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\MainWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Parts\Advanced.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Parts\DeviceDeployment.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\ProgressControl.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\ProgressPart.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\Requirements.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\WimOptionsPart.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
+</Project>

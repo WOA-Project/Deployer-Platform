@@ -1,6 +1,7 @@
 ﻿using System.Windows;
+using System.Windows.Threading;
+using Deployer.Core;
 using Serilog;
-using Serilog.Events;
 
 namespace Deployer.Gui
 {
@@ -12,9 +13,18 @@ namespace Deployer.Gui
         protected override void OnStartup(StartupEventArgs e)
         {
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.RollingFile(@"Logs\Log-{Date}.txt")
-                .MinimumLevel.Debug()
+                .WriteTo.File(@"Logs\Deployer.txt", rollingInterval: RollingInterval.Day)
+                .MinimumLevel.Verbose()
                 .CreateLogger();
+            
+            Log.Information($"Starting Deployer v{AppVersionMixin.VersionString}");
+            
+            this.DispatcherUnhandledException += OnDispatcherUnhandledException;
+        }
+
+        private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            Log.Fatal(e.Exception, "An unhandled exception has been thrown");
         }
     }
 }
